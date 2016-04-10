@@ -11,6 +11,7 @@ import anyconfig
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.alert import Alert
+from selenium.common.exceptions import NoAlertPresentException
 
 
 CONTEXTS = [
@@ -54,8 +55,8 @@ class Cli:
                             help=textwrap.dedent('''\
                                 The URL of the address to test against.
                             '''))
-        parser.add_argument('--csas', required=True, action='store_true',
-                            dest='csas',
+        parser.add_argument('--csas', required=False, action='store_true',
+                            dest='csas', default=True,
                             help=textwrap.dedent('''\
                                 Whether CSAS is enabled on site.'''))
         parser.add_argument('--browser', required=False,
@@ -138,17 +139,22 @@ def send_key_sequence(element, sequence):
 
 def handle_alert(driver):
     # Maybe this should be Alert(driver).accept()
-    Alert(driver).dismiss()
+    try:
+        Alert(driver).dismiss()
+    except NoAlertPresentException:
+        pass
 
 
 def main():
+    global CONTEXTS
+
     cli = Cli()
     driver = make_driver(cli.args.browser)
     driver.get(cli.args.url)
     comment_form = driver.find_element_by_id('commentForm')
     comment_message = driver.find_element_by_name('message')
     comment_link = driver.find_element_by_name('link')
-    for payload in generate_all_payloads():
+    for payload in generate_all_payloads(CONTEXTS):
         send_key_sequence(comment_message, payload)
         # Try this later
         # send_key_sequence(comment_link, payload)
