@@ -2,3 +2,4 @@
 
 run_csas.sh &
 run_no_csas.sh &
+run_no_csas_sanitized.sh &
