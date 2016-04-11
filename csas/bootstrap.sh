@@ -47,7 +47,7 @@ sudo /bin/sed -i "1828i extension=csas.so"  $PHPDIR/php-install-directory/lib/ph
 sudo /bin/sed -i "1830i csas.enable = 1"  $PHPDIR/php-install-directory/lib/php.ini
 
 sudo rm -rf /var/www/html
-sudo git clone https://github.com/php-csas/php-csas-demonstration /var/www/html
+sudo git clone https://github.com/php-csas/demo-site /var/www/html
 
 sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password password csas'
 sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password csas'
