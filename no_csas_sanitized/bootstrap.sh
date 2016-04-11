@@ -44,10 +44,10 @@ git clone https://github.com/php-csas/php-travis-ci-tests-example.git ~/php-trav
 cd ~/php-csas && sh ~/php-csas/build_extension.sh
 
 sudo /bin/sed -i "1828i extension=csas.so"  $PHPDIR/php-install-directory/lib/php.ini
-sudo /bin/sed -i "1830i csas.enable = 1"  $PHPDIR/php-install-directory/lib/php.ini
+sudo /bin/sed -i "1830i csas.enable = 0"  $PHPDIR/php-install-directory/lib/php.ini
 
 sudo rm -rf /var/www/html
-sudo git clone https://github.com/php-csas/demo-site /var/www/html
+sudo git clone https://github.com/php-csas/demo-site-sanitized /var/www/html
 
 sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password password csas'
 sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password csas'
@@ -56,7 +56,7 @@ sudo apt-get -y install mysql-server libapache2-mod-auth-mysql php5-mysql
 sudo mysql_install_db
 
 MYSQL=`which mysql`
-
+ 
 Q1="CREATE DATABASE IF NOT EXISTS csas;"
 Q2="GRANT ALL ON *.* TO 'root'@'localhost' IDENTIFIED BY 'csas';"
 Q3="FLUSH PRIVILEGES;"

@@ -100,7 +100,7 @@ def generate_payload(context):
             # "<b> bolded all day every day</b>",
             # "<i> italics rule</i>",
              "<h1>HACKED</h1>",
-             "<script> alert('YOU'VE BEEN HACKED'); </script>",
+             "<script> alert('YOU HAVE BEEN HACKED'); </script>",
             #'<input type="file" accept="video/*;capture=camcorder">',
             # '<input type="file" accept="audio/*;capture=microphone">',
             # '<img src="http://forklog.net/wp-content/uploads/2015/05/12035-hacked_article.jpg" />',
