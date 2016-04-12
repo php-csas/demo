@@ -192,7 +192,7 @@ def main():
         time.sleep(2)
         handle_alert(driver)
 
-    driver.close()
+    # driver.close()
 
 
 if __name__ == '__main__':

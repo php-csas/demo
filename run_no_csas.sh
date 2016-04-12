@@ -2,7 +2,7 @@
 
 dir=`pwd`
 
-cd no_csas && vagrant up
+cd no_csas && vagrant up --provision
 
 while true; do
     vagrant ssh -c 'mysql -uroot -pcsas -e "USE csas; TRUNCATE TABLE post;"'
