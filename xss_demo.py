@@ -154,33 +154,34 @@ def main():
     for i, payload in enumerate(generate_all_payloads(CONTEXTS)):
         submit_form = True
         handle_alert(driver)
+
         comment_form = driver.find_element_by_id('commentForm')
+        comment_name = driver.find_element_by_name('commentName')
+        comment_message = driver.find_element_by_name('message')
+        comment_link = driver.find_element_by_name('link')
+
         if i in [0, 6]:
-            comment_message = driver.find_element_by_name('message')
             send_key_sequence(comment_message, payload)
         elif i == 1:
             submit_form = False
-            comment_message = driver.find_element_by_name('message')
-            comment_name = driver.find_element_by_name('commentName')
             send_key_sequence(comment_message, "Pre-filling the name field with a GET request in the URL parameters...")
             driver.get(cli.args.url + '/index.php?name=' + payload)
         elif i == 2:
             submit_form = False
-            comment_message = driver.find_element_by_name('message')
-            comment_name = driver.find_element_by_name('commentName')
             send_key_sequence(comment_name, "Pre-filling the message field with a GET request in the URL parameters...")
             driver.get(cli.args.url + '/index.php?msg=' + payload)
         elif i in [3, 4, 5]:
-            comment_message = driver.find_element_by_name('message')
-            comment_link = driver.find_element_by_name('link')
             send_key_sequence(comment_message, 'Check out this link!')
             send_key_sequence(comment_link, payload)
         else:
-            comment_message = driver.find_element_by_name('message')
-            comment_link = driver.find_element_by_name('link')
             send_key_sequence(comment_message, payload)
             send_key_sequence(comment_link, payload)
 
+
+        comment_message.click()
+        handle_alert(driver)
+        comment_name.click()
+        handle_alert(driver)
         if submit_form:
             comment_form.submit()
         time.sleep(2)
